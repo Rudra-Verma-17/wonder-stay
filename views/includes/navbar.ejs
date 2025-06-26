@@ -1,0 +1,143 @@
+<!-- Include Bootstrap + Font Awesome CDN in your <head> -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+/>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md custom-navbar">
+  <div class="container-fluid">
+    <a class="navbar-brand animated-brand" href="/">
+      <i class="fa-regular fa-compass"></i> WonderStay
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- Left-side links -->
+      <div class="navbar-nav me-auto">
+        <a class="nav-link animated-link" href="/">🏠 Home</a>
+        <a class="nav-link animated-link" href="/listing">📋 Explore</a>
+        <a class="nav-link animated-link" href="/listings/new">➕ Add New</a>
+      </div>
+
+      <!-- Right-side links -->
+      <div class="navbar-nav ms-auto">
+      <% if (currUser) { %>
+  <div class="d-flex align-items-center gap-3 bg-light px-3 py-2 rounded shadow-sm">
+    <span class="fw-semibold text-dark"><%= currUser.username %></span>
+    <a href="/logout" class="btn btn-sm btn-danger">🚪 Logout</a>
+  </div>
+<% } %>
+
+         <% if (!currUser) {%>
+           <a class="nav-link animated-link" href="/signup">📝 Sign up</a>
+        <a class="nav-link animated-link" href="/login">🔐 Login</a>
+          <% } %>
+       
+        
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Optional margin for body so content doesn’t hide behind fixed navbar -->
+<!--
+<style>
+  body {
+    margin-top: 100px; /* Adjusted for new navbar height */
+  }
+</style>
+-->
+
+<!-- Custom Navbar CSS -->
+<style>
+  .custom-navbar {
+    background: linear-gradient(to right, #fce4ec, #e3f2fd);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    padding: 20px 32px;
+    border-radius: 0 0 20px 20px;
+    transition: background 0.5s ease;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #1e88e5;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+
+  .navbar-brand:hover {
+    transform: scale(1.05);
+  }
+
+  .navbar-brand i {
+    margin-right: 10px;
+  }
+
+  .animated-link {
+    position: relative;
+    font-size: 1.1rem;
+    color: #333;
+    margin-left: 24px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .animated-link:hover {
+    color: #1e88e5;
+  }
+
+  .animated-link::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    left: 0;
+    bottom: -3px;
+    background-color: #1e88e5;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .animated-link:hover::after {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .navbar-nav .nav-link {
+      margin-left: 0;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .custom-navbar {
+      border-radius: 0;
+      padding: 16px;
+    }
+
+    .navbar-brand {
+      font-size: 1.6rem;
+    }
+  }
+</style>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

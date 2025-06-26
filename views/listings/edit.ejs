@@ -1,0 +1,102 @@
+<% layout('/layouts/boilerplate') %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<body class="bg-light">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-md-7">
+        <form class="bg-white shadow-sm p-4 rounded-4" enctype="multipart/form-data" method="POST" action="/listings/<%= list._id %>?_method=PATCH">
+          <h3 class="text-center mb-4 text-primary">📝 Edit Listing</h3>
+
+          <!-- Title -->
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              name="title"
+              value="<%= list.title %>"
+              required
+              placeholder="Title"
+            />
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <textarea
+              class="form-control"
+              name="description"
+              rows="4"
+              required
+              placeholder="Description"
+            ><%= list.description %></textarea>
+          </div>
+
+          <!-- Current Image Preview -->
+          <% if (list.image && list.image.url) { %>
+            <div class="mb-3 text-center">
+              <img
+                src="<%= list.image.url %>"
+                alt="Current image"
+                class="img-thumbnail"
+                style="max-height:200px;"
+              />
+              <small class="text-muted d-block mt-2">Current image</small>
+            </div>
+          <% } %>
+
+          <!-- New Image -->
+          <div class="mb-3">
+            <input
+              type="file"
+              class="form-control"
+              name="listing[image]"
+            />
+          </div>
+
+          <!-- Price -->
+          <div class="mb-3">
+            <input
+              type="number"
+              class="form-control"
+              name="price"
+              value="<%= list.price %>"
+              placeholder="Price"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          <!-- Location -->
+          <div class="mb-3">
+            <input
+              type="text"
+              class="form-control"
+              name="location"
+              value="<%= list.location %>"
+              required
+              placeholder="Location"
+            />
+          </div>
+
+          <!-- Country -->
+          <div class="mb-4">
+            <input
+              type="text"
+              class="form-control"
+              name="country"
+              value="<%= list.country %>"
+              required
+              placeholder="Country"
+            />
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="btn btn-success w-100">
+            <i class="fa fa-save"></i> Update Listing
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>

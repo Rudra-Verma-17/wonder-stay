@@ -1,0 +1,81 @@
+
+<% layout('/layouts/boilerplate') %>
+
+<!-- Bootstrap + Animate.css -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+<body class="bg-light">
+  <!-- Hero Section -->
+  <section class="hero-section text-center text-white d-flex align-items-center justify-content-center">
+    <div class="container animate__animated animate__fadeInDown">
+      <h1 class="display-4 fw-bold">Welcome to WonderStay</h1>
+      <p class="lead mt-3">Your adventure begins with the perfect stay. Discover listings, post your own, and travel the world from your fingertips.</p>
+      <a href="/listing" class="btn btn-primary btn-lg mt-4">Explore Listings</a>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container py-5">
+    <div class="row text-center animate__animated animate__fadeInUp">
+      <div class="col-md-4 mb-4">
+        <i class="fas fa-map-marked-alt fa-3x mb-3 text-primary"></i>
+        <h5>Global Listings</h5>
+        <p>Explore properties from around the world tailored to your needs and style.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="fas fa-plus-circle fa-3x mb-3 text-success"></i>
+        <h5>Easy Hosting</h5>
+        <p>Add your own property in minutes. Hassle-free and beautifully displayed.</p>
+      </div>
+      <div class="col-md-4 mb-4">
+        <i class="fas fa-shield-alt fa-3x mb-3 text-warning"></i>
+        <h5>Secure & Trusted</h5>
+        <p>Every listing is verified. Your travel safety and trust is our priority.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="text-center bg-white py-5 border-top animate__animated animate__fadeInUp">
+    <div class="container">
+      <h3 class="mb-3">Ready to List Your Place?</h3>
+      <p class="mb-4">Earn money by sharing your space with travelers across the globe.</p>
+      <a href="/listings/new" class="btn btn-outline-primary btn-lg">Add a New Listing</a>
+    </div>
+  </section>
+</body>
+
+<style>
+  .hero-section {
+    height: 100vh;
+    background: linear-gradient(to right, #1e88e5, #64b5f6);
+    color: #fff;
+    padding: 60px 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .hero-section h1 {
+    font-size: 3.5rem;
+  }
+
+  .hero-section p {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .features-section i {
+    color: #1e88e5;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2.4rem;
+    }
+
+    .hero-section {
+      padding-top: 100px;
+    }
+  }
+</style>
