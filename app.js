@@ -19,7 +19,7 @@ async function main() {
 const path=require('path')
 app.set('view engine','ejs');
 app.set('views',path.join(__dirname,'views'));
-const port =8080;
+const port = process.env.PORT || 8080;
 app.use(express.urlencoded({ extended: true }));
 const ejs_mate=require('ejs-mate');
 app.engine('ejs',ejs_mate);
