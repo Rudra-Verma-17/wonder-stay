@@ -123,11 +123,14 @@ app.use((req,res,next)=>{
   res.status(404).render("./listings/error.ejs",{title:'Page not found'})
 })
 
-main().then(() => {
+const startServer = () => {
   app.listen(port, () => {
     console.log(`server is ready at http://localhost:${port}`);
   });
-}).catch((error) => {
-  console.error('Unable to start the application:', error);
-  process.exitCode = 1;
+};
+
+main().then(startServer).catch((error) => {
+  console.error('Unable to connect to MongoDB. Check the mongo_url environment variable:', error.message);
+  console.warn('Starting in degraded mode; database-backed routes will remain unavailable until MongoDB is configured.');
+  startServer();
 });
