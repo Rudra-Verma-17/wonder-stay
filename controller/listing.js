@@ -4,12 +4,12 @@ const router=express.Router({mergeParams:true});
 const wrapAsync=require('../utils/asyncwrap.js');
 const asyncwrap = require('../utils/asyncwrap.js')
 const listing=require('../models/schema.js')
-const {listingSchena,reviewSchema}=require('../schema.js');
+const {listingSchema,reviewSchema}=require('../schema.js');
 const Review = require('../models/review.js'); // import Review
 const ExpressError=require('../utils/expresserror.js')
 const mbxgeocoding=require('@mapbox/mapbox-sdk/services/geocoding');
 const access_token=process.env.map_token;
-const geocodingClient=mbxgeocoding({accessToken:access_token})
+const geocodingClient=access_token ? mbxgeocoding({accessToken:access_token}) : null;
 
 const validateReview=(req,res,next)=>{
   let {error}=reviewSchema.validate(req.body);
@@ -45,22 +45,34 @@ module.exports.renderNewform=(req, res) => {
 }
 
 module.exports.renderParticularList=async (req, res) => {
-
-
   const { id } = req.params;
   const list = await listing.findById(id).populate({path:'reviews',populate:{path:'author'}}).populate('owner');
-    let response=await geocodingClient.forwardGeocode({
-    query:`${list.location},${list.country}`,
-    limit:1,
-  }).send();
-  // console.log();
- 
-  res.render('./listings/show.ejs', { list ,title: "View",coordinates:response.body.features[0].geometry.coordinates});
+  if (!list) {
+    return res.status(404).render('./listings/error.ejs', { title: 'Listing not found' });
+  }
+
+  let coordinates = null;
+  if (geocodingClient && list.location && list.country) {
+    const response = await geocodingClient.forwardGeocode({
+      query: `${list.location},${list.country}`,
+      limit: 1,
+    }).send();
+    coordinates = response.body.features[0]?.geometry?.coordinates || null;
+  }
+
+  res.render('./listings/show.ejs', { list, title: "View", coordinates });
 }
 
 module.exports.postNew=async (req, res,next) => {
-    // let result=listingSchena.validate(req.body);
-    // console.log(result);
+    const { error } = listingSchema.validate({ listing: req.body });
+    if (error) {
+      throw new ExpressError(400, error.details.map((detail) => detail.message).join(', '));
+    }
+
+    if (!req.file) {
+      throw new ExpressError(400, 'An image is required.');
+    }
+
     let filename=req.file.filename;
     let url=req.file.path;
     const listingData = new listing(req.body);
@@ -129,7 +141,10 @@ module.exports.deletelist=async (req, res) => {
 
   try {
     let list=await listing.findById(id);
-    if(!list.owner.equals(res.locals.currUser._id)){
+    if(!list) {
+      return res.status(404).render('./listings/error.ejs', { title: 'Listing not found' });
+    }
+    if(!list.owner || !list.owner.equals(res.locals.currUser._id)){
       req.flash('error',"you don't have permission to delete");
       return res.redirect(`/listings/${id}`);
     }

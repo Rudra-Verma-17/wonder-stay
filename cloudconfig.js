@@ -12,7 +12,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'wonderstay',
-    allowerFormats: ['png','jpeg','jpg']
+    allowed_formats: ['png', 'jpeg', 'jpg']
   },
 });
 

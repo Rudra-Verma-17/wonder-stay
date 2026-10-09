@@ -5,8 +5,13 @@ if(process.env.NODE_ENV!='production'){
 const express=require('express')
 const mongoose=require('mongoose')
 const app=express()
+const mongoUrl = process.env.mongo_url;
 async function main() {
-    await mongoose.connect(process.env.mongo_url);
+    if (!mongoUrl) {
+      console.warn('mongo_url is not configured; database-backed features are unavailable.');
+      return;
+    }
+    await mongoose.connect(mongoUrl);
 }
 // 'mongodb://127.0.0.1/wonder'
 // const signup=require('../routes/user.js')
@@ -19,29 +24,27 @@ app.use(express.urlencoded({ extended: true }));
 const ejs_mate=require('ejs-mate');
 app.engine('ejs',ejs_mate);
 app.use(express.static(path.join(__dirname,'/public')));
-main().then((res)=>{
-    console.log('connected');
-}).catch((e)=>console.log(e));
-
 const session=require('express-session')
 const MongoStore = require('connect-mongo');
 
 
-const store=MongoStore.create({
-  mongoUrl:process.env.mongo_url,
-  crypto:{
-    secret:'mysecretcode'
+const store = mongoUrl ? MongoStore.create({
+  mongoUrl,
+  crypto: {
+    secret: process.env.SESSION_SECRET || 'development-session-secret'
   },
-  touchAfter:24*3600,
+  touchAfter: 24 * 3600,
+}) : undefined;
 
-})
+if (store) {
+  store.on("error", (e) => {
+    console.error('Error in Mongo session store:', e);
+  });
+}
 
-store.on("error",(e)=>{
-  console.log('error in mongo session',e)
-})
 const sessionOption={
-  store,
-  secret:'mysuperscretcode',
+  ...(store ? { store } : {}),
+  secret: process.env.SESSION_SECRET || 'development-session-secret',
   resave:false,
   saveUninitialized:true,
   cookie:{
@@ -74,10 +77,6 @@ const { execPath } = require('process')
 app.use(methodOverride('_method'));
 const address=require('./routes/listings.js');
 const signup=require('./routes/user.js');
-
-app.listen(port,()=>{
-    console.log('server is ready at http://localhost:8080');
-})
 
 app.use((req,res,next)=>{
   res.locals.success=req.flash('success');
@@ -121,5 +120,14 @@ res.render("./listings/error.ejs",{title:'error page'})
 
 app.use((req,res,next)=>{
   // res.send('page not found');
-  res.render("./listings/error.ejs",{title:'error page'})
+  res.status(404).render("./listings/error.ejs",{title:'Page not found'})
 })
+
+main().then(() => {
+  app.listen(port, () => {
+    console.log(`server is ready at http://localhost:${port}`);
+  });
+}).catch((error) => {
+  console.error('Unable to start the application:', error);
+  process.exitCode = 1;
+});

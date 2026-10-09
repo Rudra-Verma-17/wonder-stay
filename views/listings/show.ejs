@@ -86,11 +86,12 @@
         </div>
       </div>
 
-      <!-- Map container -->
-      <div class="col-12 mt-5">
-        <h3 class="text-center">📍 Where you will be</h3>
-        <div id="map" style="height: 300px;" class="rounded border"></div>
-      </div>
+      <% if (coordinates) { %>
+        <div class="col-12 mt-5">
+          <h3 class="text-center">📍 Where you will be</h3>
+          <div id="map" style="height: 300px;" class="rounded border"></div>
+        </div>
+      <% } %>
     </div>
   </div>
 
@@ -111,22 +112,18 @@
 
 
   
-  let token="<%= process.env.map_token %>";
-
-    mapboxgl.accessToken = token;
-    
+  <% if (coordinates && process.env.map_token) { %>
+    mapboxgl.accessToken = "<%= process.env.map_token %>";
     const map = new mapboxgl.Map({
       container: 'map',
-      center: <%- JSON.stringify(coordinates) %>, // Adjust this to your desired location
+      center: <%- JSON.stringify(coordinates) %>,
       zoom: 9
     });
-const marker1 = new mapboxgl.Marker()
-        .setLngLat(<%- JSON.stringify(coordinates) %>)
-        .setPopup(new mapboxgl.Popup({offset:25})
-
-    .setHTML("<h3>Exact location</h3>")
-    .setMaxWidth("300px"))
-        .addTo(map);
+    new mapboxgl.Marker()
+      .setLngLat(<%- JSON.stringify(coordinates) %>)
+      .setPopup(new mapboxgl.Popup({offset:25}).setHTML("<h3>Exact location</h3>"))
+      .addTo(map);
+  <% } %>
 
      
   </script>

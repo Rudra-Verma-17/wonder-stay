@@ -8,7 +8,9 @@
   "description": "this is my airbnb project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node --check app.js"
   },
   "author": "abhishek kumar",
   "license": "ISC",
