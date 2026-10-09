@@ -6,6 +6,9 @@ const express=require('express')
 const mongoose=require('mongoose')
 const app=express()
 const mongoUrl = process.env.mongo_url;
+mongoose.connection.on('error', (error) => {
+  console.error('MongoDB connection error:', error.message);
+});
 async function main() {
     if (!mongoUrl) {
       console.warn('mongo_url is not configured; database-backed features are unavailable.');
@@ -27,8 +30,8 @@ app.use(express.static(path.join(__dirname,'/public')));
 const session=require('express-session')
 const MongoStore = require('connect-mongo');
 
-
-const store = mongoUrl ? MongoStore.create({
+const useMongoSession = mongoUrl && process.env.USE_MONGO_SESSION === 'true';
+const store = useMongoSession ? MongoStore.create({
   mongoUrl,
   crypto: {
     secret: process.env.SESSION_SECRET || 'development-session-secret'
@@ -132,5 +135,8 @@ const startServer = () => {
 main().then(startServer).catch((error) => {
   console.error('Unable to connect to MongoDB. Check the mongo_url environment variable:', error.message);
   console.warn('Starting in degraded mode; database-backed routes will remain unavailable until MongoDB is configured.');
+  mongoose.disconnect().catch((disconnectError) => {
+    console.error('Unable to close the failed MongoDB connection:', disconnectError.message);
+  });
   startServer();
 });
